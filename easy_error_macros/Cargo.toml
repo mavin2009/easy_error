@@ -21,4 +21,4 @@ easy_error_core = { version = "0.1.0", path = "../easy_error_core" }
 
 [dev-dependencies]
 trybuild = "1.0"
-easy_error = { path = "../easy_error" }
+easy_error = { version = "0.1.0", path = "../easy_error" }
