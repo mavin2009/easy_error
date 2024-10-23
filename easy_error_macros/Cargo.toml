@@ -17,7 +17,7 @@ proc-macro = true
 proc-macro2 = "1.0"
 quote = "1.0"
 syn = { version = "1.0", features = ["full"] }
-easy_error_core = { path = "../easy_error_core" }
+easy_error_core = { version = "0.1.0", path = "../easy_error_core" }
 
 [dev-dependencies]
 trybuild = "1.0"
