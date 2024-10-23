@@ -1,3 +1,4 @@
+// easy_error_workspace/easy_error_macros/src/lib.rs
 use proc_macro::TokenStream;
 use quote::quote;
 use std::collections::HashSet;
@@ -37,6 +38,32 @@ impl Parse for TryEasyInput {
 }
 
 /// Defines a custom error enum with specified variants.
+///
+/// This macro generates a `Debug`, `Display`, and `Error` implementation for the enum,
+/// and a `From<YourError>` implementation for `::easy_error_core::EasyError`.
+///
+/// # Arguments
+///
+/// * `name`: The name of the error enum (an identifier).
+/// * `variants`: A comma-separated list of variant names (identifiers). At least one variant is required.
+///
+/// # Example
+///
+/// ```rust
+/// use easy_error_macros::define_error;
+///
+/// define_error!(MyError, IoError, ParseError, NetworkError);
+///
+/// // ... usage of MyError
+/// ```
+///
+/// # Errors
+///
+/// This macro will emit compile-time errors if:
+///
+/// * No variants are provided.
+/// * Duplicate variant names are detected.
+///
 #[proc_macro]
 pub fn define_error(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DefineErrorInput);
