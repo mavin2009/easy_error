@@ -11,8 +11,8 @@ homepage = "https://github.com/mavin2009/easy_error#readme"
 documentation = "https://docs.rs/easy_error"
 
 [dependencies]
-easy_error_macros = { path = "../easy_error_macros" }
-easy_error_core = { path = "../easy_error_core" }
+easy_error_macros = { version = "0.1.0", path = "../easy_error_macros" }
+easy_error_core = { version = "0.1.0", path = "../easy_error_core" }
 
 # Optional dependencies for integration
 thiserror = "1.0"
