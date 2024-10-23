@@ -1,7 +1,6 @@
-// easy_error_macros/src/lib.rs
-
 use proc_macro::TokenStream;
 use quote::quote;
+use std::collections::HashSet;
 use syn::{
     parse::{Parse, ParseStream},
     parse_macro_input, Error, Expr, Ident, LitStr, Token,
@@ -10,12 +9,10 @@ use syn::{
 /// Macro to enhance the `?` operator by adding context.
 #[proc_macro]
 pub fn try_easy(input: TokenStream) -> TokenStream {
-    // Parse the input tokens into a syntax tree
     let input = parse_macro_input!(input as TryEasyInput);
     let expr = input.expr;
     let context = input.context;
 
-    // Generate code that adds context to the error using `map_err`.
     let expanded = quote! {
         #expr.map_err(|e| ::easy_error_core::EasyError::with_context(e, #context))?
     };
@@ -23,7 +20,6 @@ pub fn try_easy(input: TokenStream) -> TokenStream {
     TokenStream::from(expanded)
 }
 
-/// Struct to parse the input for `try_easy!` macro.
 struct TryEasyInput {
     expr: Expr,
     _comma: Token![,],
@@ -41,54 +37,56 @@ impl Parse for TryEasyInput {
 }
 
 /// Defines a custom error enum with specified variants.
-///
-/// # Arguments
-///
-/// * `name` - The name of the error enum.
-/// * `variants` - A list of variant names.
-///
-/// # Example
-///
-/// ```rust
-/// use my_easy_error_macros::{define_error, try_easy};
-/// use my_easy_error_core::EasyError;
-///
-/// define_error!(MyError, IoError, ParseError);
-/// ```
 #[proc_macro]
 pub fn define_error(input: TokenStream) -> TokenStream {
-    // Parse the input tokens into a syntax tree
     let input = parse_macro_input!(input as DefineErrorInput);
     let name = input.name;
     let variants = input.variants;
 
-    // Check if variants are provided
+    // Check for duplicate variant names
+    let mut variant_names = HashSet::new();
+    let mut errors = Vec::new();
+    for variant in &variants {
+        if !variant_names.insert(variant.to_string()) {
+            let error = Error::new(
+                variant.span(),
+                format!("Duplicate variant name: {}", variant),
+            );
+            errors.push(error);
+        }
+    }
+
+    if !errors.is_empty() {
+        let combined_error = errors.into_iter().reduce(|mut acc, err| {
+            acc.combine(err);
+            acc
+        });
+        return combined_error.unwrap().to_compile_error().into();
+    }
+
+    // Check if variants are provided after checking for duplicates
     if variants.is_empty() {
-        // Emit a compile-time error if no variants are provided
         return Error::new(name.span(), "define_error! requires at least one variant")
             .to_compile_error()
             .into();
     }
 
-    // Generate enum variants
     let variants_enum = quote! {
         #(#variants),*
     };
 
-    // Generate a single `From` implementation that matches on all variants
     let from_impl = quote! {
-        impl From<#name> for EasyError {
+        impl From<#name> for ::easy_error_core::EasyError {
             fn from(error: #name) -> Self {
                 match error {
                     #(
-                        #name::#variants => EasyError::with_context(error, stringify!(#variants)),
+                        #name::#variants => ::easy_error_core::EasyError::with_context(error, stringify!(#variants)),
                     )*
                 }
             }
         }
     };
 
-    // Generate the error type with implementations
     let expanded = quote! {
         #[derive(Debug)]
         pub enum #name {
@@ -110,11 +108,9 @@ pub fn define_error(input: TokenStream) -> TokenStream {
         #from_impl
     };
 
-    // Convert the expanded code into a TokenStream
     TokenStream::from(expanded)
 }
 
-/// Struct to parse the input for `define_error!` macro.
 struct DefineErrorInput {
     name: Ident,
     variants: Vec<Ident>,
