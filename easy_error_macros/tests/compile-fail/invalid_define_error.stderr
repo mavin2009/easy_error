@@ -1,0 +1,5 @@
+error: define_error! requires at least one variant
+ --> tests/compile-fail/invalid_define_error.rs:6:15
+  |
+6 | define_error!(IncompleteError);
+  |               ^^^^^^^^^^^^^^^

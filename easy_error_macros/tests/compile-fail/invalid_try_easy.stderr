@@ -1,0 +1,13 @@
+error: expected string literal
+  --> tests/compile-fail/invalid_try_easy.rs:12:33
+   |
+12 |     try_easy!(some_operation(), 123);
+   |                                 ^^^
+
+warning: unused import: `easy_error_core::EasyError`
+ --> tests/compile-fail/invalid_try_easy.rs:3:5
+  |
+3 | use easy_error_core::EasyError;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default

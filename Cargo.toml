@@ -1,0 +1,9 @@
+# easy_error_workspace/Cargo.toml
+
+[workspace]
+resolver = "2"  # Ensures compatibility with Rust 2021 edition
+members = [
+    "easy_error_core",
+    "easy_error_macros",
+    "easy_error",
+]

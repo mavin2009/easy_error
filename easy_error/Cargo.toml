@@ -1,0 +1,19 @@
+# easy_error_workspace/easy_error/Cargo.toml
+
+[package]
+name = "easy_error"
+version = "0.1.0"
+edition = "2021"
+description = "A crate to simplify and enhance error handling in Rust"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/mavin2009/easy_error"
+homepage = "https://github.com/mavin2009/easy_error#readme"
+documentation = "https://docs.rs/easy_error"
+
+[dependencies]
+easy_error_macros = { path = "../easy_error_macros" }
+easy_error_core = { path = "../easy_error_core" }
+
+# Optional dependencies for integration
+thiserror = "1.0"
+anyhow = "1.0"

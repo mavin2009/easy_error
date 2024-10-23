@@ -1,0 +1,24 @@
+# easy_error_workspace/easy_error_macros/Cargo.toml
+
+[package]
+name = "easy_error_macros"
+version = "0.1.0"
+edition = "2021"
+description = "Procedural macros for the easy_error crate"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/mavin2009/easy_error"
+homepage = "https://github.com/mavin2009/easy_error#readme"
+documentation = "https://docs.rs/easy_error_macros"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "1.0", features = ["full"] }
+easy_error_core = { path = "../easy_error_core" }
+
+[dev-dependencies]
+trybuild = "1.0"
+easy_error = { path = "../easy_error" }
